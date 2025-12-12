@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор бизнес-идей</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin-bottom: 40px;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 36px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #2d3436;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Генератор бизнес-идей</h1>
+        <div class="grid" id="ideaGrid">
+            <!-- Карточки будут добавляться через JS -->
+        </div>
+        <div style="text-align:center; margin-top:30px;">
+            <button onclick="generateIdeas()" style="padding:10px 20px; font-size:16px; border:none; border-radius:8px; background:#4CAF50; color:white; cursor:pointer;">Сгенерировать идеи</button>
+        </div>
+    </div>
+
+    <script>
+        const ideas = [
+            "Создание сайтов и лендингов",
+            "Продажа цифровых товаров",
+            "Съёмка и монтаж видео",
+            "Ведение YouTube или TikTok",
+            "Создание мобильных приложений",
+            "Продажа товаров ручной работы",
+            "Создание игр для Roblox и itch.io",
+            "Продажа 3D-моделей",
+            "Дизайн логотипов",
+            "Фриланс: текст, дизайн, код",
+            "Продажа товаров на маркетплейсах",
+            "Онлайн-репетиторство",
+            "Создание принтов для одежды",
+            "Создание чат-ботов",
+            "SMM — ведение соцсетей",
+            "Продажа фото на фотостоках",
+            "Организация мероприятий",
+            "Разработка полезных онлайн-инструментов",
+            "Информационный блог",
+            "Создание подкастов"
+        ];
+
+        function generateIdeas() {
+            const grid = document.getElementById('ideaGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < ideas.length; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const h3 = document.createElement('h3');
+                h3.textContent = ideas[i];
+                card.appendChild(h3);
+                grid.appendChild(card);
+            }
+        }
+
+        // При загрузке страницы показываем все идеи
+        window.onload = generateIdeas;
+    </script>
+</body>
+</html>
