@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Змейка</title>
+
+<style>
+    body {
+        background: #202820;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    canvas {
+        background: #101810;
+        border: 3px solid #6a9b6a;
+        margin-top: 15px;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-top: 15px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Змейка</h1>
+<p>Очки: <span id="score">0</span></p>
+
+<canvas id="game" width="400" height="400"></canvas>
+
+<br>
+<button onclick="restartGame()">Начать заново</button>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const size = 20;
+
+let snake;
+let food;
+let direction;
+let nextDirection;
+let score;
+let gameOver;
+let timer;
+
+function restartGame() {
+    snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 }
+    ];
+
+    direction = "right";
+    nextDirection = "right";
+
+    score = 0;
+    gameOver = false;
+
+    document.getElementById("score").textContent = score;
+
+    createFood();
+    clearInterval(timer);
+
+    timer = setInterval(updateGame, 180);
+    drawGame();
+}
+
+function createFood() {
+    do {
+        food = {
+            x: Math.floor(Math.random() * 20),
+            y: Math.floor(Math.random() * 20)
+        };
+    } while (
+        snake.some(part => part.x === food.x && part.y === food.y)
+    );
+}
+
+function updateGame() {
+    if (gameOver) return;
+
+    direction = nextDirection;
+
+    const head = { ...snake[0] };
+
+    if (direction === "right") head.x++;
+    if (direction === "left") head.x--;
+    if (direction === "up") head.y--;
+    if (direction === "down") head.y++;
+
+    // Проверяем столкновение со стеной
+    if (
+        head.x < 0 || head.x >= 20 ||
+        head.y < 0 || head.y >= 20
+    ) {
+        endGame();
+        return;
+    }
+
+    const eating = head.x === food.x && head.y === food.y;
+
+    // Проверяем столкновение с собственным телом
+    const body = eating ? snake : snake.slice(0, -1);
+
+    if (body.some(part => part.x === head.x && part.y === head.y)) {
+        endGame();
+        return;
+    }
+
+    snake.unshift(head);
+
+    if (eating) {
+        score++;
+        document.getElementById("score").textContent = score;
+        createFood();
+    } else {
+        snake.pop();
+    }
+
+    drawGame();
+}
+
+function drawGame() {
+    ctx.clearRect(0, 0, 400, 400);
+
+    // Рисуем еду
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x * size, food.y * size, size, size);
+
+    // Рисуем змейку
+    snake.forEach((part, index) => {
+        ctx.fillStyle = index === 0 ? "#aaffaa" : "#42b642";
+        ctx.fillRect(
+            part.x * size,
+            part.y * size,
+            size - 2,
+            size - 2
+        );
+    });
+
+    if (gameOver) {
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Игра окончена!", 200, 200);
+    }
+}
+
+function endGame() {
+    gameOver = true;
+    clearInterval(timer);
+    drawGame();
+}
+
+document.addEventListener("keydown", function(event) {
+    const keys = {
+        ArrowUp: "up",
+        ArrowDown: "down",
+        ArrowLeft: "left",
+        ArrowRight: "right"
+    };
+
+    const newDirection = keys[event.key];
+
+    if (!newDirection) return;
+
+    event.preventDefault();
+
+    if (newDirection === "up" && direction !== "down")
+        nextDirection = "up";
+
+    if (newDirection === "down" && direction !== "up")
+        nextDirection = "down";
+
+    if (newDirection === "left" && direction !== "right")
+        nextDirection = "left";
+
+    if (newDirection === "right" && direction !== "left")
+        nextDirection = "right";
+});
+
+restartGame();
+</script>
+
+</body>
+</html>
